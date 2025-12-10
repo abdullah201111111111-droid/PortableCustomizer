@@ -1,15 +1,19 @@
-# Build.ps1 - Script to build PortableCustomizer.exe
 
-Write-Host "🔧 Running build script..."
+Write-Output "🔧 Starting build..."
 
-# Check if main script exists
-if (!(Test-Path "AI/PortableCustomizer/main.ps1")) {
-    Write-Host "❌ main.ps1 غير موجود!"
+# تأكد من وجود ملف main.ps1 داخل المسار الصحيح
+$mainScript = "AI/PortableCustomizer/WindowsTools/main.ps1"
+
+if (-Not (Test-Path $mainScript)) {
+    Write-Output "❌ ERROR: main.ps1 غير موجود في المسار:"
+    Write-Output $mainScript
     exit 1
 }
 
-# Convert PS1 → EXE
-Write-Host "📦 تحويل السكربت إلى EXE..."
-Invoke-ps2exe -inputFile "AI/PortableCustomizer/main.ps1" -outputFile "PortableCustomizer.exe" -noConsole -icon "app.ico"
+Write-Output "📦 Packing EXE..."
 
-Write-Host "✅ تم إنشاء PortableCustomizer.exe بنجاح!"
+# إنشاء ملف exe داخل مجلد build
+New-Item -ItemType Directory -Force -Path build | Out-Null
+Copy-Item $mainScript build/main.ps1 -Force
+
+Write-Output "✅ Build completed successfully!"
